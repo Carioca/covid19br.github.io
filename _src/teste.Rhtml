@@ -1,0 +1,44 @@
+<html>
+  <head>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!--begin.rcode
+  library(ggplot2)
+  library(plotly)
+  end.rcode-->
+  </head>
+  
+  <body>
+  <!--begin.rcode
+    # Create Dummy Data
+    x <- seq.Date(from = as.Date("2014-05-01"), to = as.Date("2014-05-20"), by = "day")
+    x <- as.character(as.Date(x, format = "%Y%m%d"), "%Y-%m-%d %H:%M:%S")
+    y1 <- c(15000, 20000, 25000, 22000, 30000, 32000, 29000, 30000, 26000, 29000, 
+    15000, 20000, 25000, 22000, 30000, 32000, 29000, 30000, 26000, 29000)
+    y2 <- c(25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 
+    25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000)
+
+      # Build Data Frame
+    df <- data.frame(x, y1, y2)
+    df$day <- seq(from = 1, to = 20, by = 1)
+    colnames(df) <- c("date", "revenue", "target", "day")
+    
+    # Melt Data
+    library(reshape2)
+    df$date <- NULL
+    df.l <- melt(df, id.vars = c("day"))
+    colnames(df.l) <- c("day", "segment", "revenue")
+    
+    # Load ggplot2 package
+    library(ggplot2)
+    
+    # Build Plot
+    plot <- ggplot(df.l, aes(day, revenue, group = segment, color = segment)) + 
+        geom_line()
+    
+    # Show Plot
+    plot
+
+   ggplotly(plot)
+  end.rcode-->
+  </body>
+</html>

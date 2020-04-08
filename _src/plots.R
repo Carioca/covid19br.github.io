@@ -1,4 +1,5 @@
 library(ggplot2)
+library(plotly)
 library(dplyr)
 library(tidyr)
 library(zoo)
@@ -40,6 +41,8 @@ plot.forecast.exp <-
     ylab("Número de casos") +
     ggtitle("Número de casos notificados em escala logarítimica") +
     plot.formatos
+
+plot.forecast.exp.plotly <- ggplotly(plot.forecast.exp)    
 
 ################################################################################
 ##Tempo de duplicacao calculado para uma janela de 5 dias, a partir do dia zero

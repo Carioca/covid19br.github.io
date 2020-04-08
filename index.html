@@ -22,9 +22,8 @@ window.FlexDashboardComponents = [];
 </script>
 
 <script id="flexdashboard-navbar" type="application/json">
-[{"title":"Início","href":"index.html","align":"left"},{"title":"+Info","href":"informacoes.html","align":"left"},{"title":"Fontes","href":"fontes.html","align":"left"},{"title":"Na Mídia","href":"midia.html","align":"left"},{"title":"Sobre","href":"sobre.html","align":"left"},{"icon":"fa-share-alt","items":[{"title":"Twitter","icon":"fa-twitter"},{"title":"Facebook","icon":"fa-facebook"},{"title":"Google+","icon":"fa-google-plus"},{"title":"LinkedIn","icon":"fa-linkedin"},{"title":"Pinterest","icon":"fa-pinterest"}]},{"title":"Source Code","icon":"fa-github","href":"https://github.com/covid19br/covid19br.github.io","align":"right"}]
+[{"icon":"fa-share-alt","items":[{"title":"Twitter","icon":"fa-twitter"},{"title":"Facebook","icon":"fa-facebook"},{"title":"Google+","icon":"fa-google-plus"},{"title":"LinkedIn","icon":"fa-linkedin"},{"title":"Pinterest","icon":"fa-pinterest"}]},{"title":"Source Code","icon":"fa-github","href":"https://github.com/covid19br/covid19br.github.io","align":"right"}]
 </script>
-<script src="libs/header-attrs-2.1/header-attrs.js"></script>
 <script src="libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
@@ -34,6 +33,13 @@ window.FlexDashboardComponents = [];
 <script src="libs/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
 <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.2/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
 <style type="text/css">
 
 /*
@@ -758,11 +764,167 @@ html, body {
 }
 }
 </style>
+<!doctype html> <!-- HTML 5 doctype -->
+<html lang="pt"> 
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="description" content="This is a description"> <!-- SEO: https://support.google.com/webmasters/answer/35624?hl=en#meta-descriptions -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <!-- Mobile-First Approach: Responsive -->
+    <!-- Include Favicons -->
+
+    <!-- Bootstrap CSS via BootstrapCDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet"> <!-- Poppins Font -->
+    <link href="../css/custom.css" rel="stylesheet">
+
+    <title>Observatório COVID-19 no Brasil</title>
+
+    <!-- Chart.js via CDN 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.15.6/dist/xlsx.min.js" integrity="sha256-hOCKwKbcZuaaHfbnL7n+l25SCB14sdPJN6U6EwVqvck=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0/dist/chartjs-plugin-datasource.min.js" integrity="sha256-IETwD2SE/IWT0oZy2CvQY78kyHqNsum864WdfYQ7chU=" crossorigin="anonymous"></script>
+    <script src="../js/custom.js"></script>-->
+  </head>
+  <body>
+    <!-- Date & Hour -->
+    <div class="container-fluid mt-2" id="page-title">
+      <h1 class="display-4">Visão Geral<small class="text-muted ml-2 mr-1" id="update">Última atualização:</small><small class="text-muted" id="date">18:00 ⋅ 04/04/2020</small></h1>
+  </div>
+
+    <!-- Cards -->
+    <div class="card-columns m-3">
+      <!-- Mapa Card-->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="media">
+            <img src="../img/icon_globe.svg" class="card-icon mr-3" width=64px alt="..."> <!-- Adicionar alt!-->
+            <div class="media-body">
+              <h5 class="card-title m-0">Dinâmicas de contágio</h5>
+              <p class="card-text">Como epidemias se espalham por um país continental?</p>
+            </div>
+          </div>
+          <p class="card-text"><small class="text-muted">Última atualização: 23/04/2021 17:34</small></p>
+        </div>
+        <!-- <div class="card-img-top d-flex align-items-center justify-content-center bg-dark" style="height:600px"><p class="text-center text-light">600</div> --> <!-- PLACEHOLDER -->
+        <img src="https://covid19br.github.io/fig/voos_brasil.jpg" class="card-img-top" alt="..."> <!-- SEO -->
+        <p class="card-text text-center mr-2 ml-2"><small class="text-muted">Os pontos representam estados brasileiros e as setas indicam a intensidade de vôos saindo de um estado e chegando em outro.</small></p>
+        <div class="card-body pt-0">
+          <p class="text-justify">
+            A chave pode estar na rede formada por aeroportos e vôos conectando os estados brasileiros.
+            Portanto, a análise da estrutura dessa rede aérea pode nos ajudar a entender a propagação do COVID-19 por nosso país.
+          </p>
+          <!-- BUTTON -->
+          <a href="https://guimaraeslabbr.weebly.com/COVID19.html" target="_blank"><button class="btn btn-primary mt-1" type="button">
+            Leia mais sobre
+          </button></a>
+          <footer class="blockquote-footer text-right">Observatório COVID-19</footer>
+        </div>
+      </div>      
+      <!-- Graph Card-->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="media">
+            <!--<div class="card-icon mr-3 d-flex align-items-center justify-content-center bg-dark" style="width: 64px; height:64px"><p class="text-center text-light">64</div>-->
+            <img src="../img/icon_virus.svg"  width=64px class="card-icon mr-3" alt="Corona Vírus"> <!-- Adicionar alt!-->
+            <div class="media-body">
+              <h5 class="card-title m-0">Progressão da doença</h5>
+              <p class="card-text">Quantos casos notificados já temos no Brasil? Quantos teremos nos próximos dias?</p>
+            </div>
+          </div>
+          <p class="card-text"><small class="text-muted">Última atualização: 23/04/2021 17:34</small></p>
+        </div>
+        <!-- Content -->
+        <!-- <div class="card-img-top d-flex align-items-center justify-content-center bg-dark" style="height:300px"><p class="text-center text-light">300</div> -->
+        <!--<img src="https://picsum.photos/500/300?random=1" class="card-img-top" alt="...">-->
+        <div class="d-block"><canvas id="myChart"></canvas></div>
+        <div class="card-body pt-2 pb-0 d-flex justify-content-center">
+          <small class="chartLegendSquare d-flex align-self-center mr-4" id="legendGrey">Casos Confirmados</small>
+          <small class="chartLegendSquare d-flex align-self-center mr-4" id="legendBlue">Previsão</small>
+        </div>
+        <div class="card-body pt-2 pb-0 d-flex justify-content-center">
+          <small class="chartLegendSquare d-flex align-self-center mr-4" id="legendBlueLight">Limite Superior</small>
+          <small class="chartLegendSquare d-flex align-self-center" id="legendBlueDark">Limite Inferior</small>
+        </div>
+        <!--<p class="card-text text-center"><small class="text-muted">Legenda do Gráfico</small></p>-->
+        <div class="card-body pt-0">
+          <button class="btn btn-primary mb-3 mt-3" type="button" data-toggle="collapse" data-target="#collapseGraph" aria-expanded="false" aria-controls="collapseGraph">
+            Por que só 5 dias? ▾
+          </button>
+          <div class="collapse" id="collapseGraph">
+            <p class="text-justify">
+              Porque quando o crescimento é exponencial as <b>incertezas também crescem exponencialmente.</b>
+              Por isso a região cinza, que expressa a incerteza da previsão, aumenta de largura com o tempo.
+              E mesmo pequenas mudanças na taxa que aconteçam hoje ou amanhã vão causar enormes variações no futuro.
+            </p>
+            <p class="text-justify">
+              Por isso avaliamos que é inadequado fazer previsões para mais de 5 dias com este método.
+            </p>
+            <footer class="blockquote-footer text-right">Observatório COVID-19</footer>
+          </div>
+        </div>
+      </div>
+      <!-- Notice Card -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="media">
+            <div class="media-body">
+              <h5 class="card-title">Quão rápido a doença se propaga?</h5>
+              <p class="card-text">
+                No momento não é possível estimar tempos de duplicação da epidemia, pois há um enorme acúmulo de testes moleculares sem resultados, necessários para que os casos sejam confirmados e notificados.
+                Essa demora faz com que os números disponíveis publicamente (número de notificações) cresça de maneira artificialmente lenta.
+              </p>
+              <p class="card-text">
+                Assim, a evolução do números oficiais informa hoje sobre a dinâmica de notificação, não da epidemia.
+                Seria irresponsável seguir divulgando medidas de propagação da epidemia no Brasil com esses números.
+              </p>
+            </div>
+          </div>
+          <p class="card-text"><small class="text-muted">Última atualização: 23/04/2021 17:34</small></p>
+        </div>
+      </div>
+      <!-- Isolamento Card-->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="media">
+            <img src="../img/icon_people.svg" class="card-icon mr-3" width=64px alt="..."> <!-- SEO: Adicionar alt!-->
+            <div class="media-body">
+              <h5 class="card-title m-0">Isolamento Social</h5>
+              <p class="card-text">Como o isolamento social influencia a dinâmica de propagação da epidemia?</p>
+            </div>
+          </div>
+          <p class="card-text"><small class="text-muted">Última atualização: 23/04/2021 17:34</small></p>
+        </div>
+        <!-- <div class="card-img-top d-flex align-items-center justify-content-center bg-dark" style="height:500px"><p class="text-center text-light">500</div> --> <!-- PLACEHOLDER -->
+        <img src="https://covid19br.github.io/fig/rede_prsc.jpg" class="card-img-top" alt="..."> <!-- SEO -->
+        <p class="card-text text-center mr-3 ml-3"><small class="text-muted">Nesta simulação cada pessoa tem um número de contatos e esses contatos estão espalhados no espaço e conectadas interações sociais.</small></p>
+        <div class="card-body pt-0">
+          <p class="text-justify">
+            Aqui, usamos um cenário bem simples para ilustrar as <b>vantagens do isolamento social</b> em reduzir a propagação de uma doença contagiosa.
+            Nós traduzimos e adaptamos o modelo de propagação de um vírus em uma rede social feito por Uri Wilensky (Northwestern University). 
+          </p>
+          <a href="https://guimaraeslabbr.weebly.com/COVID19.html" target="_blank"><button class="btn btn-primary mt-1" type="button">
+            Simule diferentes cenários
+          </button></a>
+          <footer class="blockquote-footer text-right">Observatório COVID-19</footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bg-light p-2">
+      <p class="text-dark mb-0"><small>Designed with Bootstrap</small></p>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS via BootstrapCDN-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
 
 
-
-<link rel="stylesheet" href="styles.css" type="text/css" />
-<link rel="stylesheet" href="home.css" type="text/css" />
+<link rel="stylesheet" href="css/custom.css" type="text/css" />
 
 </head>
 
@@ -784,7 +946,7 @@ html, body {
 <span class="navbar-brand">
   Observatório COVID-19 BR
   <span class="navbar-author">
-      27 de março de 2020, 16:37
+      08 de abril de 2020, 12:11
       </span>
 </span>
 
@@ -798,9 +960,8 @@ html, body {
 </div><!--/.container-->
 </div><!--/.navbar-->
 
-<img class="mobile-figure" data-mobile-figure-id=fig1 src="index_files/figure-html/unnamed-chunk-1-1.mb.png" />
-<img class="mobile-figure" data-mobile-figure-id=fig2 src="index_files/figure-html/unnamed-chunk-2-1.mb.png" />
-<img class="mobile-figure" data-mobile-figure-id=fig3 src="index_files/figure-html/unnamed-chunk-3-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig1 src="index_files/figure-html/unnamed-chunk-2-1.mb.png" />
+<img class="mobile-figure" data-mobile-figure-id=fig2 src="index_files/figure-html/unnamed-chunk-3-1.mb.png" />
 <script type="text/javascript">
 
 
@@ -2576,7 +2737,8 @@ window.FlexDashboardComponents.push({
 <div class="knitr-options" data-fig-width="576" data-fig-height="384">
 
 </div>
-<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" width="576" data-figure-id=fig1 style="display: block; margin: auto;" /> </a></p>
+<p><div id="htmlwidget-7fcb82378a4758687a81" style="width:576px;height:384px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7fcb82378a4758687a81">{"x":{"data":[{"x":[18317,18318,18319,18320,18321,18322,18323,18324,18325,18326,18327,18328,18329,18330,18331,18332,18333,18334,18335,18336,18337,18338,18339,18340,18341,18342,18343,18344,18345,18346,18347,18348,18349,18350,18351,18352,18352,18352,18351,18350,18349,18348,18347,18346,18345,18344,18343,18342,18341,18340,18339,18338,18337,18336,18335,18334,18333,18332,18331,18330,18329,18328,18327,18326,18325,18324,18323,18322,18321,18320,18319,18318,18317,18317],"y":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,3.51037745957367,3.57040234894313,3.63023001024846,3.68995593520204,3.74962315914801,3.74962315914801,3.83102542052056,3.75975677626891,3.68854683302488,3.6174386261326,3.54652764730444,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"text":["Index: 2020-02-25<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-26<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-27<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-28<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-29<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-01<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-02<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-03<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-04<br />casos:    4,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-05<br />casos:    7,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-06<br />casos:   13,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-07<br />casos:   19,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-08<br />casos:   25,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-09<br />casos:   30,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-10<br />casos:   34,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-11<br />casos:   52,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-12<br />casos:   77,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-13<br />casos:   98,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-14<br />casos:  121,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-15<br />casos:  200,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-16<br />casos:  234,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-17<br />casos:  290,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-18<br />casos:  428,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-19<br />casos:  621,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-20<br />casos:  904,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-21<br />casos: 1128,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-22<br />casos: 1546,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-23<br />casos: 1891,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-24<br />casos: 2201,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-25<br />casos: 2433,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-26<br />casos: 2915,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-27<br />casos: 3376,390<br />ic.low: 3,510377<br />ic.upp: 3,546528","Index: 2020-03-28<br />casos: 3925,731<br />ic.low: 3,570402<br />ic.upp: 3,617439","Index: 2020-03-29<br />casos: 4564,450<br />ic.low: 3,630230<br />ic.upp: 3,688547","Index: 2020-03-30<br />casos: 5307,089<br />ic.low: 3,689956<br />ic.upp: 3,759757","Index: 2020-03-31<br />casos: 6170,556<br />ic.low: 3,749623<br />ic.upp: 3,831025","Index: 2020-03-31<br />casos: 6170,556<br />ic.low: 3,749623<br />ic.upp: 3,831025","Index: 2020-03-31<br />casos: 6170,556<br />ic.low: 3,749623<br />ic.upp: 3,831025","Index: 2020-03-30<br />casos: 5307,089<br />ic.low: 3,689956<br />ic.upp: 3,759757","Index: 2020-03-29<br />casos: 4564,450<br />ic.low: 3,630230<br />ic.upp: 3,688547","Index: 2020-03-28<br />casos: 3925,731<br />ic.low: 3,570402<br />ic.upp: 3,617439","Index: 2020-03-27<br />casos: 3376,390<br />ic.low: 3,510377<br />ic.upp: 3,546528","Index: 2020-03-26<br />casos: 2915,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-25<br />casos: 2433,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-24<br />casos: 2201,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-23<br />casos: 1891,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-22<br />casos: 1546,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-21<br />casos: 1128,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-20<br />casos:  904,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-19<br />casos:  621,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-18<br />casos:  428,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-17<br />casos:  290,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-16<br />casos:  234,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-15<br />casos:  200,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-14<br />casos:  121,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-13<br />casos:   98,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-12<br />casos:   77,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-11<br />casos:   52,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-10<br />casos:   34,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-09<br />casos:   30,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-08<br />casos:   25,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-07<br />casos:   19,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-06<br />casos:   13,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-05<br />casos:    7,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-04<br />casos:    4,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-03<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-02<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-01<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-29<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-28<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-27<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-26<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-25<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-25<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"transparent","dash":"solid"},"fill":"toself","fillcolor":"rgba(211,211,211,1)","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18317,18318,18319,18320,18321,18322,18323,18324,18325,18326,18327,18328,18329,18330,18331,18332,18333,18334,18335,18336,18337,18338,18339,18340,18341,18342,18343,18344,18345,18346,18347,18348,18349,18350,18351,18352],"y":[0,0,0,0,0.301029995663981,0.301029995663981,0.301029995663981,0.301029995663981,0.602059991327962,0.845098040014257,1.11394335230684,1.27875360095283,1.39794000867204,1.47712125471966,1.53147891704226,1.7160033436348,1.88649072517248,1.99122607569249,2.08278537031645,2.30102999566398,2.36921585741014,2.46239799789896,2.63144376901317,2.79309160017658,2.95616843047536,3.05230909964732,3.18920948958231,3.27669152884504,3.34262004255335,3.38614210893082,3.46463855909503,3.52845255343906,3.59392048753786,3.65938842163667,3.72485635573547,3.79032428983428],"text":["Index: 2020-02-25<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-26<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-27<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-28<br />casos:    1,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-02-29<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-01<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-02<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-03<br />casos:    2,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-04<br />casos:    4,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-05<br />casos:    7,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-06<br />casos:   13,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-07<br />casos:   19,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-08<br />casos:   25,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-09<br />casos:   30,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-10<br />casos:   34,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-11<br />casos:   52,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-12<br />casos:   77,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-13<br />casos:   98,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-14<br />casos:  121,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-15<br />casos:  200,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-16<br />casos:  234,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-17<br />casos:  290,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-18<br />casos:  428,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-19<br />casos:  621,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-20<br />casos:  904,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-21<br />casos: 1128,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-22<br />casos: 1546,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-23<br />casos: 1891,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-24<br />casos: 2201,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-25<br />casos: 2433,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-26<br />casos: 2915,000<br />ic.low:       NA<br />ic.upp:       NA","Index: 2020-03-27<br />casos: 3376,390<br />ic.low: 3,510377<br />ic.upp: 3,546528","Index: 2020-03-28<br />casos: 3925,731<br />ic.low: 3,570402<br />ic.upp: 3,617439","Index: 2020-03-29<br />casos: 4564,450<br />ic.low: 3,630230<br />ic.upp: 3,688547","Index: 2020-03-30<br />casos: 5307,089<br />ic.low: 3,689956<br />ic.upp: 3,759757","Index: 2020-03-31<br />casos: 6170,556<br />ic.low: 3,749623<br />ic.upp: 3,831025"],"type":"scatter","mode":"lines","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18317,18318,18319,18320,18321,18322,18323,18324,18325,18326,18327,18328,18329,18330,18331,18332,18333,18334,18335,18336,18337,18338,18339,18340,18341,18342,18343,18344,18345,18346,18347,18348],"y":[0,0,0,0,0.301029995663981,0.301029995663981,0.301029995663981,0.301029995663981,0.602059991327962,0.845098040014257,1.11394335230684,1.27875360095283,1.39794000867204,1.47712125471966,1.53147891704226,1.7160033436348,1.88649072517248,1.99122607569249,2.08278537031645,2.30102999566398,2.36921585741014,2.46239799789896,2.63144376901317,2.79309160017658,2.95616843047536,3.05230909964732,3.18920948958231,3.27669152884504,3.34262004255335,3.38614210893082,3.46463855909503,3.52845255343906],"text":["Data: 2020-02-25 <br /> Casos: 1<br />Index: 2020-02-25<br />casos:    1,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-02-26 <br /> Casos: 1<br />Index: 2020-02-26<br />casos:    1,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-02-27 <br /> Casos: 1<br />Index: 2020-02-27<br />casos:    1,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-02-28 <br /> Casos: 1<br />Index: 2020-02-28<br />casos:    1,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-02-29 <br /> Casos: 2<br />Index: 2020-02-29<br />casos:    2,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-01 <br /> Casos: 2<br />Index: 2020-03-01<br />casos:    2,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-02 <br /> Casos: 2<br />Index: 2020-03-02<br />casos:    2,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-03 <br /> Casos: 2<br />Index: 2020-03-03<br />casos:    2,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-04 <br /> Casos: 4<br />Index: 2020-03-04<br />casos:    4,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-05 <br /> Casos: 7<br />Index: 2020-03-05<br />casos:    7,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-06 <br /> Casos: 13<br />Index: 2020-03-06<br />casos:   13,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-07 <br /> Casos: 19<br />Index: 2020-03-07<br />casos:   19,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-08 <br /> Casos: 25<br />Index: 2020-03-08<br />casos:   25,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-09 <br /> Casos: 30<br />Index: 2020-03-09<br />casos:   30,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-10 <br /> Casos: 34<br />Index: 2020-03-10<br />casos:   34,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-11 <br /> Casos: 52<br />Index: 2020-03-11<br />casos:   52,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-12 <br /> Casos: 77<br />Index: 2020-03-12<br />casos:   77,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-13 <br /> Casos: 98<br />Index: 2020-03-13<br />casos:   98,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-14 <br /> Casos: 121<br />Index: 2020-03-14<br />casos:  121,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-15 <br /> Casos: 200<br />Index: 2020-03-15<br />casos:  200,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-16 <br /> Casos: 234<br />Index: 2020-03-16<br />casos:  234,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-17 <br /> Casos: 290<br />Index: 2020-03-17<br />casos:  290,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-18 <br /> Casos: 428<br />Index: 2020-03-18<br />casos:  428,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-19 <br /> Casos: 621<br />Index: 2020-03-19<br />casos:  621,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-20 <br /> Casos: 904<br />Index: 2020-03-20<br />casos:  904,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-21 <br /> Casos: 1128<br />Index: 2020-03-21<br />casos: 1128,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-22 <br /> Casos: 1546<br />Index: 2020-03-22<br />casos: 1546,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-23 <br /> Casos: 1891<br />Index: 2020-03-23<br />casos: 1891,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-24 <br /> Casos: 2201<br />Index: 2020-03-24<br />casos: 2201,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-25 <br /> Casos: 2433<br />Index: 2020-03-25<br />casos: 2433,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-26 <br /> Casos: 2915<br />Index: 2020-03-26<br />casos: 2915,00<br />ic.low:       NA<br />ic.upp:       NA","Data: 2020-03-27 <br /> Casos: 3376<br />Index: 2020-03-27<br />casos: 3376,39<br />ic.low: 3,510377<br />ic.upp: 3,546528"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":7.55905511811024,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18348,18349,18350,18351,18352],"y":[3.52845255343906,3.59392048753786,3.65938842163667,3.72485635573547,3.79032428983428],"text":["Data: 2020-03-27 <br /> Casos previstos: 3376 <br /> IC min: 3239 <br /> IC max: 3520<br />Index: 2020-03-27<br />casos: 3376,390<br />ic.low: 3,510377<br />ic.upp: 3,546528","Data: 2020-03-28 <br /> Casos previstos: 3926 <br /> IC min: 3719 <br /> IC max: 4144<br />Index: 2020-03-28<br />casos: 3925,731<br />ic.low: 3,570402<br />ic.upp: 3,617439","Data: 2020-03-29 <br /> Casos previstos: 4564 <br /> IC min: 4268 <br /> IC max: 4881<br />Index: 2020-03-29<br />casos: 4564,450<br />ic.low: 3,630230<br />ic.upp: 3,688547","Data: 2020-03-30 <br /> Casos previstos: 5307 <br /> IC min: 4897 <br /> IC max: 5751<br />Index: 2020-03-30<br />casos: 5307,089<br />ic.low: 3,689956<br />ic.upp: 3,759757","Data: 2020-03-31 <br /> Casos previstos: 6171 <br /> IC min: 5619 <br /> IC max: 6777<br />Index: 2020-03-31<br />casos: 6170,556<br />ic.low: 3,749623<br />ic.upp: 3,831025"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(230,97,1,1)","opacity":1,"size":7.55905511811024,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(230,97,1,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":44.4931506849315,"r":7.30593607305936,"b":30.552096305521,"l":69.4063926940639},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Número de casos notificados em escala logarítimica","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[18315.25,18353.75],"tickmode":"array","ticktext":["01/mar","15/mar","01/abr"],"tickvals":[18322,18336,18353],"categoryorder":"array","categoryarray":["01/mar","15/mar","01/abr"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.191551271026028,4.02257669154658],"tickmode":"array","ticktext":["1","10","100","1000","10000"],"tickvals":[0,1,2,3,4],"categoryorder":"array","categoryarray":["1","10","100","1000","10000"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"<b> Número de casos <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"3d555b23c3c0":{"x":{},"y":{},"ymin":{},"ymax":{},"type":"scatter"},"3d5554ca95a":{"x":{},"y":{},"ymin":{},"ymax":{}},"3d556cc7f183":{"text":{},"x":{},"y":{},"ymin":{},"ymax":{}},"3d5553c0b6f2":{"text":{},"x":{},"y":{},"ymin":{},"ymax":{}}},"cur_data":"3d555b23c3c0","visdat":{"3d555b23c3c0":["function (y) ","x"],"3d5554ca95a":["function (y) ","x"],"3d556cc7f183":["function (y) ","x"],"3d5553c0b6f2":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script> </a></p>
 </div>
 <div class="item">
 <h4>
@@ -2593,7 +2755,7 @@ window.FlexDashboardComponents.push({
 <div class="knitr-options" data-fig-width="288" data-fig-height="192">
 
 </div>
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="288" data-figure-id=fig2 style="display: block; margin: auto;" /> </a></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="288" data-figure-id=fig1 style="display: block; margin: auto;" /> </a></p>
 </div>
 <div class="item">
 <h4>
@@ -2603,7 +2765,7 @@ window.FlexDashboardComponents.push({
 <div class="knitr-options" data-fig-width="288" data-fig-height="192">
 
 </div>
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="288" data-figure-id=fig3 style="display: block; margin: auto;" /> </a></p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="288" data-figure-id=fig2 style="display: block; margin: auto;" /> </a></p>
 </div>
 <div class="item">
 <h4>
@@ -2631,26 +2793,6 @@ $(document).ready(function () {
 
 });
 </script>
-
-<!--<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licença Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Observatório Covid-19 BR</span> de <a xmlns:cc="http://creativecommons.org/ns#" href="covid19br.github.io" property="cc:attributionName" rel="cc:attributionURL">Decameron Team</a> está licenciado com uma Licença <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons - Atribuição-NãoComercial 4.0 Internacional</a>.-->
-
-<!-- Default Statcounter code for Observatório COVID-19 BR
-https://covid19br.github.io -->
-<script type="text/javascript">
-var sc_project=12220607; 
-var sc_invisible=1; 
-var sc_security="18092bfd"; 
-</script>
-<script type="text/javascript"
-src="https://www.statcounter.com/counter/counter.js"
-async></script>
-<noscript><div class="statcounter"><a title="Web Analytics
-Made Easy - StatCounter" href="https://statcounter.com/"
-target="_blank"><img class="statcounter"
-src="https://c.statcounter.com/12220607/0/18092bfd/1/"
-alt="Web Analytics Made Easy -
-StatCounter"></a></div></noscript>
-<!-- End of Statcounter Code -->
 
 <script type="text/javascript">
 $(document).ready(function () {
